@@ -1,13 +1,9 @@
-import fs from 'node:fs';
-import path from 'node:path';
+import { readProtocolSource } from './protocol-source.mjs';
+export { PROTO_BUNDLE } from './protocol-source.mjs';
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
 
-const DEFAULT_BUNDLE = path.resolve(
-  import.meta.dirname,
-  '../work/extracted/_src_chunks_/src/chunks/game.js',
-);
 const TARGET = 'chunks:///_virtual/proto-bundle.js';
 
 function instanceOf(n, t) {
@@ -41,8 +37,8 @@ function moduleRequire(name) {
   return emptyHelpers;
 }
 
-export function loadProtocol(bundlePath = DEFAULT_BUNDLE) {
-  const src = fs.readFileSync(bundlePath, 'utf8');
+export function loadProtocol(bundlePath) {
+  const src = readProtocolSource(bundlePath);
   const collector = { outer: null, target: null };
 
   const System = makeSystem(collector);
@@ -115,5 +111,3 @@ export function describe(protocol) {
   }
   return { total: keys.length, messages, enums, services };
 }
-
-export const PROTO_BUNDLE = DEFAULT_BUNDLE;

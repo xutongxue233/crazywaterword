@@ -49,6 +49,9 @@
 npm install
 ```
 
+首次使用请在电脑版微信进入《疯狂水世界》，让微信下载协议分包。程序优先读取本地解包的 `work/extracted/_src_chunks_/src/chunks/game.js`。如果缺少该文件，会直接读取当前用户微信缓存中版本号最高的 `_src_chunks_.wxapkg`，无需手动解包。
+如果微信缓存位于自定义目录，可在 PowerShell 中设置 `$env:CW_PROTO_BUNDLE = "D:\游戏缓存\_src_chunks_.wxapkg"`（替换为实际路径，也支持解包后的 `game.js`）。运行 `npm test` 验证协议是否可用。
+
 ---
 
 ## 快速开始

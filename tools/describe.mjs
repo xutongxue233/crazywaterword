@@ -1,11 +1,8 @@
-import fs from 'node:fs';
-import path from 'node:path';
+import { PROTO_BUNDLE as BUNDLE, readProtocolSource } from '../src/protocol-source.mjs';
 
 // The proto bundle is protobufjs `-t static-module` output: no reflection metadata at
 // all, only hard-coded encode/decode bodies per type. Field numbers and names therefore
 // have to be read back out of those bodies.
-
-const BUNDLE = path.resolve(import.meta.dirname, '../work/extracted/_src_chunks_/src/chunks/game.js');
 
 const WIRE_CALL = /t\.uint32\((\d+)\)\.([A-Za-z0-9_]+)\(e\.([A-Za-z0-9_.]+)/g;
 const CASE_SCALAR = /case (\d+):o\.([A-Za-z0-9_]+)=t\.([A-Za-z0-9_]+)\(\)/g;
@@ -13,7 +10,7 @@ const CASE_ARRAY = /case (?<num>\d+):o\.(?<field>[A-Za-z0-9_]+)&&o\.\k<field>\.l
 const CASE_MSG = /case (\d+):o\.([A-Za-z0-9_]+)=tf\.protocol\.([A-Za-z0-9_]+)\.decode/g;
 const CASE_COND = /case (\d+):/g;
 
-const source = fs.readFileSync(BUNDLE, 'utf8');
+const source = readProtocolSource();
 const indexes = new Map();
 // 前缀有两种：组内其余项是 `,i.X=...`，组里第一项是 `}).X=...`（见 findType）。
 for (const match of source.matchAll(/(?:^|[,;{(]i\.|\}\)\.)([A-Za-z0-9_]+)=function\(\)\{/g)) {
